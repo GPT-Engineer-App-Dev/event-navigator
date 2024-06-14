@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <ChakraProvider theme={theme}>
       <SupabaseAuthProvider> {/* Updated provider */}
         <App />
-      </SupabaseProvider>
+      </SupabaseAuthProvider>
     </ChakraProvider>
   </React.StrictMode>
 );
