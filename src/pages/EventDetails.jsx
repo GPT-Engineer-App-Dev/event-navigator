@@ -1,19 +1,20 @@
 import { useParams } from "react-router-dom";
 import { Container, Heading, Text, Box } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEvent } from "../integrations/supabase/index.js";
 
 const EventDetails = () => {
   const { id } = useParams();
-  const [event, setEvent] = useState(null);
+  const { data: event, isLoading, isError } = useEvent(id);
 
-  useEffect(() => {
-    // Fetch event details from local storage or API
-    const events = JSON.parse(localStorage.getItem("events")) || [];
-    const eventDetails = events.find((event, index) => index === parseInt(id));
-    setEvent(eventDetails);
-  }, [id]);
+  if (isLoading) {
+    return (
+      <Container centerContent>
+        <Heading as="h2" size="xl" mt={10}>Loading...</Heading>
+      </Container>
+    );
+  }
 
-  if (!event) {
+  if (isError || !event) {
     return (
       <Container centerContent>
         <Heading as="h2" size="xl" mt={10}>Event not found</Heading>
