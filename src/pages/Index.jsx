@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container, VStack, Heading, Text, Box, Input, Button, FormControl, FormLabel } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [events, setEvents] = useState([]);
@@ -7,17 +8,24 @@ const Index = () => {
   const [eventDate, setEventDate] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
 
+  useEffect(() => {
+    const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
+    setEvents(storedEvents);
+  }, []);
+
   const addEvent = () => {
     if (eventName && eventDate) {
+      let updatedEvents;
       if (editingIndex !== null) {
-        const updatedEvents = events.map((event, index) =>
+        updatedEvents = events.map((event, index) =>
           index === editingIndex ? { name: eventName, date: eventDate } : event
         );
-        setEvents(updatedEvents);
         setEditingIndex(null);
       } else {
-        setEvents([...events, { name: eventName, date: eventDate }]);
+        updatedEvents = [...events, { name: eventName, date: eventDate }];
       }
+      setEvents(updatedEvents);
+      localStorage.setItem("events", JSON.stringify(updatedEvents));
       setEventName("");
       setEventDate("");
     }
@@ -30,7 +38,9 @@ const Index = () => {
   };
 
   const deleteEvent = (index) => {
-    setEvents(events.filter((_, i) => i !== index));
+    const updatedEvents = events.filter((_, i) => i !== index);
+    setEvents(updatedEvents);
+    localStorage.setItem("events", JSON.stringify(updatedEvents));
   };
 
   return (
@@ -56,7 +66,9 @@ const Index = () => {
           ) : (
             events.map((event, index) => (
               <Box key={index} p={2} borderWidth={1} borderRadius="md" mb={2}>
-                <Text fontWeight="bold">{event.name}</Text>
+                <Link to={`/event/${index}`}>
+                  <Text fontWeight="bold">{event.name}</Text>
+                </Link>
                 <Text>{event.date}</Text>
                 <Button size="sm" colorScheme="yellow" onClick={() => editEvent(index)}>Edit</Button>
                 <Button size="sm" colorScheme="red" onClick={() => deleteEvent(index)}>Delete</Button>
