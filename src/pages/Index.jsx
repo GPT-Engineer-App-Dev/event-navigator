@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { useEvents, useAddEvent, useUpdateEvent, useDeleteEvent } from "../integrations/supabase/index.js";
 import { Container, VStack, Heading, Text, Box, Input, Button, FormControl, FormLabel } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { useEvents, useAddEvent, useUpdateEvent, useDeleteEvent } from "../integrations/supabase/index.js";
 
 const Index = () => {
   const { data: events, isLoading, isError } = useEvents();
+  const addEventMutation = useAddEvent();
+  const updateEventMutation = useUpdateEvent();
+  const deleteEventMutation = useDeleteEvent();
+
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [editingEvent, setEditingEvent] = useState(null);
