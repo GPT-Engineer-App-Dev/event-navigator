@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Container, VStack, Heading, Text, Box, Input, Button, FormControl, FormLabel } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useEvents, useAddEvent, useUpdateEvent, useDeleteEvent } from "../integrations/supabase/index.js";
+import { useSupabaseAuth } from "../integrations/supabase/auth.jsx"; // Import useSupabaseAuth
 
 const Index = () => {
+  const { session, logout } = useSupabaseAuth(); // Get session and logout from useSupabaseAuth
   const { data: events, isLoading, isError } = useEvents();
   const addEventMutation = useAddEvent();
   const updateEventMutation = useUpdateEvent();
@@ -44,7 +46,7 @@ const Index = () => {
     return <Text>Error loading events.</Text>;
   }
 
-return (
+  return (
     <Container centerContent maxW="container.md" py={10}>
       <VStack spacing={6} w="100%">
         <Heading as="h1" size="xl">Events Management</Heading>
@@ -77,6 +79,9 @@ return (
             ))
           )}
         </Box>
+        <Button onClick={session ? logout : () => window.location.href = '/login'}>
+          {session ? "Logout" : "Login"}
+        </Button>
       </VStack>
     </Container>
   );
